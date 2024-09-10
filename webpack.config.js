@@ -12,18 +12,15 @@ module.exports = {
 	plugins: [
 		new CopyWebpackPlugin({
 			patterns: [
-				{from: './index.html', to: ''}
+				{from: './index.html', to: ''},
+				{from: './less-build/style.css', to: ''}
 			]
 		})
 	],
 	output: {
 		filename: 'image-cropper.js',
 		path: path.resolve(__dirname, 'build'),
-		clean: true,
-		library: {
-			name: "cropper",
-			type: "umd"
-		}
+		clean: true
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],

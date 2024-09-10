@@ -32,3 +32,6 @@ export function cropperCrop(parentElement: any, fileInputElement: any, previewIm
 	DomBuilder.of(fileInputElement).addEventListener('change', fileLoaded);
 
 }
+
+// @ts-ignore
+if (window) window['cropperCrop'] = cropperCrop;
