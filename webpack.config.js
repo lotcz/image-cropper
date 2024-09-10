@@ -3,10 +3,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	mode: 'development',
-	entry: {
-		index: './index.ts'
-	},
-	devtool: 'inline-source-map',
+	entry: './index.ts',
+	devtool: 'source-map',
 	devServer: {
 		contentBase: './build',
 		port: 8000
@@ -22,6 +20,10 @@ module.exports = {
 		filename: 'image-cropper.js',
 		path: path.resolve(__dirname, 'build'),
 		clean: true,
+		library: {
+			name: "cropper",
+			type: "umd"
+		}
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],

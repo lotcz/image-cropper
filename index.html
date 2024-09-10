@@ -5,14 +5,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>Image Cropper Demo</title>
 		<link rel="preload" as="style" href="style.css" onload="this.onload=null;this.rel='stylesheet'">
-		<script defer src="index.bundle.js"></script>
+		<script src="./image-cropper.js"></script>
     </head>
     <body>
 		<h1>Image Cropper Demo</h1>
 		<h2>Form</h2>
-		<form>
+		<form id="upload_form" method="post" enctype="multipart/form-data">
 			<h3>Image</h3>
-			<input type="file" name="image_upload" />
+			<input type="file" id="image_upload" name="image_upload" />
 		</form>
+		<script>
+			cropper.cropperCrop(
+				"#upload_form",
+				"#image_upload"
+			);
+		</script>
     </body>
 </html>
