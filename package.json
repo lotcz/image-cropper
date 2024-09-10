@@ -16,14 +16,15 @@
 		"webpack": "^5.76.0",
 		"webpack-cli": "^4.8.0",
 		"webpack-dev-server": "^3.11.2",
+		"webpack-merge": "^6.0.1",
 		"workbox-webpack-plugin": "^6.3.0"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build-less": "lessc style.less build/less/style.css",
-		"build-webpack": "webpack",
+		"build-webpack": "webpack --config webpack.prod.js",
 		"build": "npm run build-less && npm run build-webpack",
-		"debug-serve-webpack": "webpack serve --open",
+		"debug-serve-webpack": "webpack serve --open --config webpack.dev.js",
 		"debug-watch-less": "less-watch-compiler style build style.less",
 		"debug": "concurrently \"npm:debug-*\""
 	},
