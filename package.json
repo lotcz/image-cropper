@@ -2,7 +2,7 @@
 	"name": "image-cropper",
 	"version": "0.0.1",
 	"description": "Javascript lib that lets user crop images before upload.",
-	"main": "build/image-cropper.js",
+	"main": "dist/image-cropper.js",
 	"devDependencies": {
 		"concurrently": "^7.6.0",
 		"copy-webpack-plugin": "^9.0.1",
@@ -20,7 +20,7 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build-less": "lessc style.less less-build/style.css",
+		"build-less": "lessc style.less build/less/style.css",
 		"build-webpack": "webpack",
 		"build": "npm run build-less && npm run build-webpack",
 		"debug-serve-webpack": "webpack serve --open",

@@ -6,20 +6,20 @@ module.exports = {
 	entry: './index.ts',
 	devtool: 'source-map',
 	devServer: {
-		contentBase: './build',
+		contentBase: './dist',
 		port: 8000
 	},
 	plugins: [
 		new CopyWebpackPlugin({
 			patterns: [
 				{from: './index.html', to: ''},
-				{from: './less-build/style.css', to: ''}
+				{from: './build/less/style.css', to: ''}
 			]
 		})
 	],
 	output: {
 		filename: 'image-cropper.js',
-		path: path.resolve(__dirname, 'build'),
+		path: path.resolve(__dirname, 'dist'),
 		clean: true
 	},
 	resolve: {
