@@ -12,6 +12,7 @@ export function cropperCrop(parentElement: any, fileInputElement: any, previewIm
 	}
 
 	const createEditor = function (src: any) {
+		destroyEditor();
 		editor = new Editor(parentElement, src);
 	}
 

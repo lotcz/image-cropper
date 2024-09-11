@@ -4,7 +4,7 @@ export default class ImgProps {
 
 	src: any;
 
-	zoom: number;
+	zoom: number = 1;
 
 	canvasWidth: number;
 
@@ -30,9 +30,9 @@ export default class ImgProps {
 
 	offsetY: number;
 
-	dragging: boolean;
+	dragging: boolean = false;
 
-	selecting: boolean;
+	selecting: boolean = false;
 
 	handlers: Func[] = [];
 

@@ -16,7 +16,8 @@ export default class Toolbar {
 
 	render() {
 		this.wrapper.text(
-			`Original: ${this.imgProps.originalWidth}px x ${this.imgProps.originalHeight}px,
+			`Zoom: ${this.imgProps.zoom},
+			Original: ${this.imgProps.originalWidth}px x ${this.imgProps.originalHeight}px,
 			Cropped: ${Math.abs(this.imgProps.width)}px x ${Math.abs(this.imgProps.height)}px`
 		);
 	}

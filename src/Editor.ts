@@ -15,7 +15,9 @@ export default class Editor {
 	imgProps: ImgProps;
 
 	constructor(parent: any, src: any) {
-		this.wrapper = DomBuilder.of('div').parent(parent);
+		this.wrapper = DomBuilder.of('div')
+			.parent(parent)
+			.css("image-cropper-editor");
 
 		this.imgProps = new ImgProps();
 		this.imgProps.src = src;
@@ -76,6 +78,7 @@ export default class Editor {
 		});
 
 		window.addEventListener('resize', () => this.updateCanvasSize());
+		this.updateCanvasSize();
 	}
 
 	updateCanvasSize() {
