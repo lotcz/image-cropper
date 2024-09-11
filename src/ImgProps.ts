@@ -1,4 +1,6 @@
 type Func = { (): void; }
+type FuncHandlers = Array<Func>;
+type FuncHandlersCache = Map<string, FuncHandlers>;
 
 export default class ImgProps {
 
@@ -34,14 +36,24 @@ export default class ImgProps {
 
 	selecting: boolean = false;
 
-	handlers: Func[] = [];
+	handlers: FuncHandlersCache = new Map<string, FuncHandlers>();
+
+	addEventListener(event: string, handler: Func) {
+		if (!this.handlers.has(event)) this.handlers.set(event, []);
+		this.handlers.get(event).push(handler);
+	}
+
+	triggerEvent(event: string) {
+		if (!this.handlers.has(event)) return;
+		this.handlers.get(event).forEach((h: Func) => h());
+	}
 
 	addChangedEventListener(handler: Func) {
-		this.handlers.push(handler);
+		this.addEventListener('change', handler);
 	}
 
 	propsChanged() {
-		this.handlers.forEach((h) => h());
+		this.triggerEvent('change');
 	}
 
 	setZoom(zoom: number) {

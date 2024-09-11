@@ -1,12 +1,11 @@
 import DomBuilder from "./DomBuilder";
 import ImgProps from "./ImgProps";
 import Box from "./Box";
+import Component from "./Component";
 
-export default class Preview {
+export default class Preview extends Component {
 
 	wrapper: DomBuilder;
-
-	imgProps: ImgProps;
 
 	img: HTMLImageElement;
 
@@ -17,13 +16,13 @@ export default class Preview {
 	box: Box;
 
 	constructor(parent: any, imgProps: ImgProps) {
+		super(parent, imgProps);
 		this.wrapper = DomBuilder.of('div').parent(parent).css('image-cropper-preview');
-		this.imgProps = imgProps;
 		this.img = <HTMLImageElement>DomBuilder.of('img').parent(this.wrapper).css('visually-hidden').build();
 		this.canvas = <HTMLCanvasElement>DomBuilder.of('canvas').parent(this.wrapper).build();
 		this.context2d = this.canvas.getContext('2d');
 
-		this.box = new Box(this.wrapper);
+		this.box = new Box(this.wrapper, imgProps);
 
 		this.img.addEventListener(
 			'load',
@@ -46,8 +45,6 @@ export default class Preview {
 
 		const diffX = (this.imgProps.canvasWidth - actualWidth) / 2;
 		const diffY = (this.imgProps.canvasHeight - actualHeight) / 2;
-
-		console.log(diffX, diffY);
 
 		this.context2d.clearRect(0, 0, this.imgProps.canvasWidth, this.imgProps.canvasHeight);
 		this.context2d.drawImage(

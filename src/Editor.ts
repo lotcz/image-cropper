@@ -3,8 +3,9 @@ import Preview from "./Preview";
 import Toolbar from "./Toolbar";
 import EventUtil from "./EventUtil";
 import ImgProps from "./ImgProps";
+import Component from "./Component";
 
-export default class Editor {
+export default class Editor extends Component {
 
 	wrapper: DomBuilder;
 
@@ -12,15 +13,12 @@ export default class Editor {
 
 	toolbar: Toolbar;
 
-	imgProps: ImgProps;
-
 	constructor(parent: any, src: any) {
+		super(parent, new ImgProps());
+		this.imgProps.src = src;
 		this.wrapper = DomBuilder.of('div')
 			.parent(parent)
 			.css("image-cropper-editor");
-
-		this.imgProps = new ImgProps();
-		this.imgProps.src = src;
 
 		this.preview = new Preview(this.wrapper, this.imgProps);
 		this.toolbar = new Toolbar(this.wrapper, this.imgProps);
@@ -79,6 +77,8 @@ export default class Editor {
 
 		window.addEventListener('resize', () => this.updateCanvasSize());
 		this.updateCanvasSize();
+
+		this.imgProps.addEventListener('close', () => this.destroy());
 	}
 
 	updateCanvasSize() {
