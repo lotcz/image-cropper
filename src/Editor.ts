@@ -2,7 +2,7 @@ import DomBuilder from "./DomBuilder";
 import Preview from "./Preview";
 import Toolbar from "./Toolbar";
 import EventUtil from "./EventUtil";
-import ImgProps from "./ImgProps";
+import ImgProps, {EventHandler} from "./ImgProps";
 import Component from "./Component";
 
 export default class Editor extends Component {
@@ -67,10 +67,10 @@ export default class Editor extends Component {
 			}
 			if (this.imgProps.selecting) {
 				this.imgProps.setBox(
-					this.imgProps.x,
-					this.imgProps.y,
-					e.clientX - this.imgProps.x,
-					e.clientY - this.imgProps.y
+					this.imgProps.boxStartX,
+					this.imgProps.boxStartY,
+					e.clientX - this.imgProps.boxStartX,
+					e.clientY - this.imgProps.boxStartY
 				);
 			}
 		});
@@ -83,6 +83,10 @@ export default class Editor extends Component {
 
 	updateCanvasSize() {
 		this.imgProps.setCanvasSize(window.innerWidth, window.innerHeight);
+	}
+
+	addOnCropListener(handler: EventHandler) {
+		this.imgProps.addEventListener('cropped', handler);
 	}
 
 	destroy() {

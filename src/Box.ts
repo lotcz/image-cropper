@@ -14,10 +14,11 @@ export default class Box extends Component {
 
 	render() {
 		this.wrapper
-			.style('left', `${this.imgProps.width > 0 ? this.imgProps.x : this.imgProps.x + this.imgProps.width}px`)
-			.style('top', `${this.imgProps.height > 0 ? this.imgProps.y : this.imgProps.y + this.imgProps.height}px`)
-			.style('width', `${Math.abs(this.imgProps.width)}px`)
-			.style('height', `${Math.abs(this.imgProps.height)}px`)
+			.toggleCss('visually-hidden', !(this.imgProps.boxWidth > 0))
+			.style('left', `${this.imgProps.boxWidth > 0 ? this.imgProps.boxStartX : this.imgProps.boxStartX + this.imgProps.boxWidth}px`)
+			.style('top', `${this.imgProps.boxHeight > 0 ? this.imgProps.boxStartY : this.imgProps.boxStartY + this.imgProps.boxHeight}px`)
+			.style('width', `${Math.abs(this.imgProps.boxWidth)}px`)
+			.style('height', `${Math.abs(this.imgProps.boxHeight)}px`)
 			.build();
 	}
 }

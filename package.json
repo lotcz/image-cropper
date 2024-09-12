@@ -21,7 +21,7 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build-less": "lessc style.less build/less/style.css",
+		"build-less": "lessc style/style.less build/style.css",
 		"build-webpack": "webpack --config webpack.prod.js",
 		"build": "npm run build-less && npm run build-webpack",
 		"debug-serve-webpack": "webpack serve --open --config webpack.dev.js",
@@ -30,6 +30,7 @@
 	},
 	"author": "Karel Zavadil",
 	"dependencies": {
-		"html-server": "^0.1.1"
+		"html-server": "^0.1.1",
+		"less-watch-compiler": "^1.16.3"
 	}
 }

@@ -40,6 +40,9 @@ export default class DomBuilder {
 		try {
 			return DomBuilder.of(something);
 		} catch (e: any) {
+			if (typeof somethingElse === 'function') {
+				return DomBuilder.of(somethingElse());
+			}
 			return DomBuilder.of(somethingElse);
 		}
 	}
@@ -55,7 +58,7 @@ export default class DomBuilder {
 		return this.element.classList.contains(cls);
 	}
 
-	attr(name: string, value: string): DomBuilder {
+	attr(name: string, value: any): DomBuilder {
 		this.element.setAttribute(name, value);
 		return this;
 	}
@@ -76,6 +79,18 @@ export default class DomBuilder {
 		return this;
 	}
 
+	removeCss(css: string): DomBuilder {
+		css.split(' ').forEach((cls) => {
+			if (typeof cls === 'string' && cls.length > 0 && this.hasCss(cls)) this.element.classList.remove(cls);
+		});
+		return this;
+	}
+
+	toggleCss(css: string, use: boolean): DomBuilder {
+		if (use) return this.addCss(css);
+		return this.removeCss(css);
+	}
+
 	css(css: string): DomBuilder {
 		this.element.className = css;
 		return this;
@@ -86,15 +101,17 @@ export default class DomBuilder {
 		return this;
 	}
 
-	addEventListener(event: string, handler: EventListenerOrEventListenerObject) {
+	addEventListener(event: string, handler: EventListenerOrEventListenerObject): DomBuilder {
 		this.element.addEventListener(event, handler);
+		return this;
 	}
 
-	removeEventListener(event: string, handler: EventListenerOrEventListenerObject) {
+	removeEventListener(event: string, handler: EventListenerOrEventListenerObject): DomBuilder {
 		this.element.removeEventListener(event, handler);
+		return this;
 	}
 
-	destroy() {
+	destroy(): void {
 		 this.element.remove();
 	}
 

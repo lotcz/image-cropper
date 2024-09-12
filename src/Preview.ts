@@ -19,7 +19,7 @@ export default class Preview extends Component {
 		super(parent, imgProps);
 		this.wrapper = DomBuilder.of('div').parent(parent).css('image-cropper-preview');
 		this.img = <HTMLImageElement>DomBuilder.of('img').parent(this.wrapper).css('visually-hidden').build();
-		this.canvas = <HTMLCanvasElement>DomBuilder.of('canvas').parent(this.wrapper).build();
+		this.canvas = <HTMLCanvasElement>DomBuilder.of('canvas').css('preview-canvas').parent(this.wrapper).build();
 		this.context2d = this.canvas.getContext('2d');
 
 		this.box = new Box(this.wrapper, imgProps);
@@ -34,11 +34,13 @@ export default class Preview extends Component {
 		this.img.src = this.imgProps.src;
 
 		this.imgProps.addChangedEventListener(() => this.render());
+		this.imgProps.addEventListener('crop', () => this.crop());
 	}
 
 	render() {
-		DomBuilder.of(this.canvas).attr('width', `${this.imgProps.canvasWidth}px`);
-		DomBuilder.of(this.canvas).attr('height', `${this.imgProps.canvasHeight}px`);
+		DomBuilder.of(this.canvas)
+			.attr('width', `${this.imgProps.canvasWidth}px`)
+			.attr('height', `${this.imgProps.canvasHeight}px`);
 
 		const actualWidth = this.imgProps.originalWidth * this.imgProps.zoom;
 		const actualHeight = this.imgProps.originalHeight * this.imgProps.zoom;
@@ -57,6 +59,37 @@ export default class Preview extends Component {
 			diffY > 0 ? diffY : 0,
 			diffX > 0 ? actualWidth : this.imgProps.canvasWidth,
 			diffY > 0 ? actualHeight : this.imgProps.canvasHeight
+		);
+
+	}
+
+	crop() {
+		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
+			.parent(this.wrapper)
+			.css('visually-hidden')
+			.attr('width', `${Math.abs(this.imgProps.boxWidth)}px`)
+			.attr('height', `${Math.abs(this.imgProps.boxHeight)}px`)
+			.build();
+		const context2d = canvas.getContext('2d');
+		context2d.drawImage(
+			this.img,
+			0,
+			0,
+			this.imgProps.boxWidth / this.imgProps.zoom,
+			this.imgProps.boxHeight / this.imgProps.zoom,
+			0,
+			0,
+			this.imgProps.boxWidth,
+			this.imgProps.boxHeight
+		);
+		canvas.toBlob(
+			(blob: Blob | null) => {
+				if (blob === null) console.error('Cropped blob is null');
+				this.imgProps.triggerEvent('cropped', blob);
+				this.imgProps.triggerEvent('close');
+			},
+			"image/jpeg",
+			0.9
 		);
 
 	}

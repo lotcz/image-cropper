@@ -14,6 +14,19 @@ export function cropperCrop(parentElement: any, fileInputElement: any, previewIm
 	const createEditor = function (src: any) {
 		destroyEditor();
 		editor = new Editor(parentElement, src);
+		editor.addOnCropListener((blob: any) => {
+			try {
+				const preview = <HTMLImageElement>DomBuilder.of(previewImageElement).build();
+				preview.src = URL.createObjectURL(blob);
+			} catch (e) {
+				console.log('No preview for cropper specified');
+			}
+			const fileInput = <HTMLInputElement>DomBuilder.of(fileInputElement).build();
+			const file = new File([blob], fileInput.value, {type: "image/jpeg", lastModified:new Date().getTime()});
+			const container = new DataTransfer();
+			container.items.add(file);
+			fileInput.files = container.files;
+		});
 	}
 
 	const fileLoaded = function (e: Event) {

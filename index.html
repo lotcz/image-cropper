@@ -13,11 +13,13 @@
 		<form id="upload_form" method="post" enctype="multipart/form-data">
 			<h3>Image</h3>
 			<input type="file" id="image_upload" name="image_upload" />
+			<img id="image_preview" alt="preview" src=""/>
 		</form>
 		<script>
 			cropperCrop(
 				"#upload_form",
-				"#image_upload"
+				"#image_upload",
+				"#image_preview"
 			);
 		</script>
     </body>

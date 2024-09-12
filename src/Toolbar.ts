@@ -1,36 +1,56 @@
 import DomBuilder from "./DomBuilder";
 import ImgProps from "./ImgProps";
 import Component from "./Component";
+import EventUtil from "./EventUtil";
 
 export default class Toolbar extends Component {
 
 	wrapper: DomBuilder;
 
-	info: DomBuilder;
+	zoomInfo: DomBuilder;
 
-	actions: DomBuilder;
+	originalInfo: DomBuilder;
+
+	croppedInfo: DomBuilder;
+
+	buttons: DomBuilder;
+
+	cropButton: DomBuilder;
 
 	constructor(parent: any, imgProps: ImgProps) {
 		super(parent, imgProps);
-		this.wrapper = DomBuilder.of('div').parent(parent).css('toolbar');
+		this.wrapper = DomBuilder.of('div')
+			.parent(parent)
+			.css('toolbar')
+			.addEventListener('mousedown', EventUtil.stop);
 
-		this.info = DomBuilder.of('div').parent(this.wrapper);
-		this.actions = DomBuilder.of('div').parent(this.wrapper);
+		this.zoomInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
+
+		this.cropButton = DomBuilder.of('button')
+			.parent(this.buttons)
+			.text('Crop!')
+			.addEventListener('click', (e: Event) => {
+				EventUtil.stop(e);
+				this.imgProps.triggerEvent('crop');
+			});
 
 		DomBuilder.of('button')
-			.parent(this.actions)
+			.parent(this.buttons)
 			.text('Close')
-			.addEventListener('click', () => this.imgProps.triggerEvent('close'));
-
+			.addEventListener('click', (e: Event) => {
+				EventUtil.stop(e);
+				this.imgProps.triggerEvent('close');
+			});
 
 		this.imgProps.addChangedEventListener(() => this.render());
 	}
 
 	render() {
-		this.info.text(
-			`Zoom: ${this.imgProps.zoom},
-			Original: ${this.imgProps.originalWidth}px x ${this.imgProps.originalHeight}px,
-			Cropped: ${Math.abs(this.imgProps.width)}px x ${Math.abs(this.imgProps.height)}px`
-		);
+		this.zoomInfo.text(`Zoom: ${this.imgProps.zoom}`);
+		this.originalInfo.text(`Original: ${this.imgProps.originalWidth}px x ${this.imgProps.originalHeight}px`);
+		this.croppedInfo.text(`Cropped: ${Math.abs(this.imgProps.boxWidth)}px x ${Math.abs(this.imgProps.boxHeight)}px`);
 	}
 }
