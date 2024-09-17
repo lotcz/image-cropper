@@ -1,15 +1,15 @@
 import DomBuilder from "./DomBuilder";
 import ImgProps from "./ImgProps";
-import Component from "./Component";
+import EditorComponent from "./EditorComponent";
 
-export default class Box extends Component {
+export default class Box extends EditorComponent {
 
 	wrapper: DomBuilder;
 
 	constructor(parent: any, imgProps: ImgProps) {
 		super(parent, imgProps);
 		this.wrapper = DomBuilder.of('div').parent(parent).css('box');
-		this.imgProps.addChangedEventListener(() => this.render());
+		this.imgProps.addChangedListener(() => this.render());
 	}
 
 	render() {

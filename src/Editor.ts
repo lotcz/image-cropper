@@ -2,16 +2,19 @@ import DomBuilder from "./DomBuilder";
 import Preview from "./Preview";
 import Toolbar from "./Toolbar";
 import EventUtil from "./EventUtil";
-import ImgProps, {EventHandler} from "./ImgProps";
-import Component from "./Component";
+import ImgProps from "./ImgProps";
+import EditorComponent from "./EditorComponent";
+import {EventHandler} from "./LogicalComponent";
 
-export default class Editor extends Component {
+export default class Editor extends EditorComponent {
 
 	wrapper: DomBuilder;
 
 	preview: Preview;
 
 	toolbar: Toolbar;
+
+	initialized: boolean = false;
 
 	constructor(parent: any, src: any) {
 		super(parent, new ImgProps());
@@ -78,7 +81,27 @@ export default class Editor extends Component {
 		window.addEventListener('resize', () => this.updateCanvasSize());
 		this.updateCanvasSize();
 
+		this.imgProps.addChangedListener(() => this.initialize());
+		this.initialize();
+
 		this.imgProps.addEventListener('close', () => this.destroy());
+	}
+
+	initialize() {
+		if (this.initialized) return;
+		if (isNaN(this.imgProps.canvasHeight) || isNaN(this.imgProps.canvasWidth)) return;
+		if (isNaN(this.imgProps.originalHeight) || isNaN(this.imgProps.originalWidth)) return;
+
+		let zoomW = 1;
+		if (this.imgProps.originalWidth > this.imgProps.canvasWidth) {
+			zoomW = (this.imgProps.canvasWidth - 10) / this.imgProps.originalWidth;
+		}
+		let zoomH = 1;
+		if (this.imgProps.originalHeight > this.imgProps.canvasHeight) {
+			zoomH = (this.imgProps.canvasHeight - 10) / this.imgProps.originalHeight;
+		}
+		this.initialized = true;
+		this.imgProps.setZoom(Math.min(zoomH, zoomW));
 	}
 
 	updateCanvasSize() {

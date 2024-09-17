@@ -1,9 +1,10 @@
 import DomBuilder from "./DomBuilder";
 import ImgProps from "./ImgProps";
 import Box from "./Box";
-import Component from "./Component";
+import EditorComponent from "./EditorComponent";
+import Vector2 from "./Vector2";
 
-export default class Preview extends Component {
+export default class Preview extends EditorComponent {
 
 	wrapper: DomBuilder;
 
@@ -33,7 +34,7 @@ export default class Preview extends Component {
 		);
 		this.img.src = this.imgProps.src;
 
-		this.imgProps.addChangedEventListener(() => this.render());
+		this.imgProps.addChangedListener(() => this.render());
 		this.imgProps.addEventListener('crop', () => this.crop());
 	}
 
@@ -64,23 +65,33 @@ export default class Preview extends Component {
 	}
 
 	crop() {
+
+		const canvasSize = new Vector2(this.imgProps.canvasWidth, this.imgProps.canvasHeight);
+		const actualSize = new Vector2(this.imgProps.originalWidth, this.imgProps.originalHeight).multiply(this.imgProps.zoom);
+		const imageCorner = canvasSize.sub(actualSize).multiply(0.5);
+		const boxCorner = new Vector2(this.imgProps.boxStartX, this.imgProps.boxStartY);
+		const boxSize = new Vector2(this.imgProps.boxWidth, this.imgProps.boxHeight);
+
+		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoom);
+		const cropSize = boxSize.multiply(1/this.imgProps.zoom);
+
 		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
 			.parent(this.wrapper)
 			.css('visually-hidden')
-			.attr('width', `${Math.abs(this.imgProps.boxWidth)}px`)
-			.attr('height', `${Math.abs(this.imgProps.boxHeight)}px`)
+			.attr('width', `${Math.abs(cropSize.x)}px`)
+			.attr('height', `${Math.abs(cropSize.y)}px`)
 			.build();
 		const context2d = canvas.getContext('2d');
 		context2d.drawImage(
 			this.img,
+			cropCorner.x,
+			cropCorner.y,
+			cropSize.x,
+			cropSize.y,
 			0,
 			0,
-			this.imgProps.boxWidth / this.imgProps.zoom,
-			this.imgProps.boxHeight / this.imgProps.zoom,
-			0,
-			0,
-			this.imgProps.boxWidth,
-			this.imgProps.boxHeight
+			cropSize.x,
+			cropSize.y
 		);
 		canvas.toBlob(
 			(blob: Blob | null) => {

@@ -1,9 +1,9 @@
 import DomBuilder from "./DomBuilder";
 import ImgProps from "./ImgProps";
-import Component from "./Component";
+import EditorComponent from "./EditorComponent";
 import EventUtil from "./EventUtil";
 
-export default class Toolbar extends Component {
+export default class Toolbar extends EditorComponent {
 
 	wrapper: DomBuilder;
 
@@ -45,7 +45,7 @@ export default class Toolbar extends Component {
 				this.imgProps.triggerEvent('close');
 			});
 
-		this.imgProps.addChangedEventListener(() => this.render());
+		this.imgProps.addChangedListener(() => this.render());
 	}
 
 	render() {
