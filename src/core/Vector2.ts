@@ -5,16 +5,16 @@ export default class Vector2 extends LogicalComponent {
 	x: number;
 	y: number;
 
-	constructor(x: number, y: number) {
+	constructor(x: number = 0, y: number = 0) {
 		super();
 		this.set(x, y);
 	}
 
-	distanceTo(v: Vector2) {
+	distanceTo(v: Vector2): number {
 		return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2));
 	}
 
-	equalsTo(v: Vector2) {
+	equalsTo(v: Vector2): boolean {
 		return this.x === v.x && this.y === v.y;
 	}
 
@@ -23,17 +23,22 @@ export default class Vector2 extends LogicalComponent {
 	 * @param x Number|Vector2
 	 * @param y Number|undefined
 	 */
-	set(x: number, y : number) {
+	set(x: number | Vector2, y? : number): void {
+		if (x instanceof Vector2) {
+			this.set(x.x, x.y);
+			return;
+		}
+
 		if (this.x !== x || this.y !== y) {
-			const old = this.clone();
-			this.x = x;
+			this.x = Number(x);
 			this.y = y;
 			this.triggerChangedEvent();
 		}
 	}
 
 	size(): number {
-		return this.distanceTo(new Vector2(0, 0));
+		const dist = this.distanceTo(new Vector2(0, 0));
+		return Number.isNaN(dist) ? 0 : dist;
 	}
 
 	setSize(size: number) {

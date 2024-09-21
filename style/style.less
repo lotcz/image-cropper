@@ -1,5 +1,6 @@
 @white-bg: #fff;
 @white-text: #ddd;
+@light-gray: #444;
 @black-bg: #222;
 @black-text: #111;
 
@@ -7,66 +8,73 @@
 	display: none !important;
 }
 
-.image-cropper-editor {
-	background-color: rgba(0, 0, 0, 0.8);
-	z-index: 10000;
+.spread {
 	display: block;
-	width: 100%;
 	position: fixed;
+	width: 100%;
 	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
+}
 
-	canvas.preview-canvas {
-		z-index: 10001;
-		display: block;
-		width: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
-	}
+.image-cropper-editor {
+	.spread();
+	background-color: rgba(0, 0, 0, 0.8);
+	z-index: 10000;
 
-	.toolbar {
-		z-index: 12000;
-		display: flex;
-		flex-direction: column;
-		position: absolute;
-		gap: 10px;
-		top: 10px;
-		left: 10px;
-		padding: 10px;
-		border-radius: 7px;
-		background-color: @white-bg;
-		color: @black-text;
-		font-family: Arial, sans-serif;
-		font-size: 12pt;
-
-		.buttons {
-			display: flex;
-			flex-direction: row;
-			gap: 10px;
-
-			button {
-				background-color: @black-bg;
-				color: @white-text;
-				font-size: 12pt;
-				padding: 4px 8px;
-				border-width: 0;
-				border-radius: 4px;
-			}
+	.preview {
+		canvas.preview-canvas {
+			.spread();
+			z-index: 10001;
 		}
 	}
 
-	.box {
-		background-color: rgba(0, 0, 0, 0);
-		z-index: 11000;
-		display: block;
-		position: fixed;
-		border: solid 3px rgba(255, 255, 255, 0.7);
+.toolbar {
+	z-index: 12000;
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	gap: 10px;
+	top: 10px;
+	left: 10px;
+	padding: 10px;
+	border-radius: 7px;
+	background-color: @white-bg;
+	color: @black-text;
+	font-family: Arial, sans-serif;
+	font-size: 12pt;
+
+	.buttons {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+
+		button {
+			background-color: @black-bg;
+			color: @white-text;
+			font-size: 12pt;
+			padding: 4px 8px;
+			border-width: 0;
+			border-radius: 4px;
+		}
+
+		button[disabled] {
+			background-color: @light-gray;
+		}
 	}
+}
+
+.box {
+	.spread();
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 11000;
+
+	canvas.box-canvas {
+		.spread();
+		z-index: 11001;
+	}
+}
 
 }
 

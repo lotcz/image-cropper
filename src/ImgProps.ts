@@ -1,67 +1,75 @@
-import LogicalComponent from "./LogicalComponent";
+import LogicalComponent from "./core/LogicalComponent";
+import Vector2 from "./core/Vector2";
+
+export enum ImgMode {
+	Crop,
+	Resize
+}
 
 export default class ImgProps extends LogicalComponent {
 
+	mode: ImgMode = ImgMode.Crop;
+
 	src: any;
 
-	zoom: number = 1;
+	zoomImg: number = 1;
 
-	canvasWidth: number;
+	canvasSize: Vector2 = new Vector2();
 
-	canvasHeight: number;
+	originalSize: Vector2 = new Vector2();
 
-	originalWidth: number;
+	boxSelecting: boolean = false;
 
-	originalHeight: number;
+	boxZoom: number = 1;
 
-	dragStartX: number;
+	boxStart: Vector2 = new Vector2();
 
-	dragStartY: number;
+	boxStartSanitized: Vector2 = new Vector2();
 
-	boxStartX: number;
+	boxSize: Vector2 = new Vector2();
 
-	boxStartY: number;
-
-	boxWidth: number;
-
-	boxHeight: number;
-
-	offsetX: number;
-
-	offsetY: number;
+	offset: Vector2 = new Vector2();
 
 	dragging: boolean = false;
 
-	selecting: boolean = false;
+	dragStart: Vector2 = new Vector2();
+
+	constructor() {
+		super();
+		this.addChild(this.canvasSize);
+		this.addChild(this.originalSize);
+		this.addChild(this.boxStart);
+		this.addChild(this.boxStartSanitized);
+		this.addChild(this.boxSize);
+		this.addChild(this.offset);
+		this.addChild(this.dragStart);
+
+		const updateBoxHandler = () => this.updateBox();
+		this.boxStart.addChangedListener(updateBoxHandler);
+		this.boxSize.addChangedListener(updateBoxHandler);
+	}
 
 	setZoom(zoom: number) {
-		this.zoom = zoom;
+		this.zoomImg = zoom;
 		this.triggerChangedEvent();
 	}
 
 	setOriginalSize(width: number, height: number) {
-		this.originalWidth = width;
-		this.originalHeight = height;
-		this.triggerChangedEvent();
+		this.originalSize.set(width, height);
 	}
 
 	setOffset(x: number, y: number) {
-		this.offsetX = x;
-		this.offsetY = y;
-		this.triggerChangedEvent();
+		this.offset.set(x, y);
 	}
 
 	setCanvasSize(x: number, y: number) {
-		this.canvasWidth = x;
-		this.canvasHeight = y;
-		this.triggerChangedEvent();
+		this.canvasSize.set(x, y);
 	}
 
-	setBox(x: number, y: number, width: number, height: number) {
-		this.boxStartX = x;
-		this.boxStartY = y;
-		this.boxWidth = width;
-		this.boxHeight = height;
-		this.triggerChangedEvent();
+	updateBox() {
+		this.boxStartSanitized.set(
+			this.boxSize.x > 0 ? this.boxStart.x : this.boxStart.x + this.boxSize.x,
+			this.boxSize.y > 0 ? this.boxStart.y : this.boxStart.y + this.boxSize.y
+		);
 	}
 }

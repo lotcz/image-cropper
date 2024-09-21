@@ -1,25 +1,33 @@
 import Editor from './src/Editor'
-import DomBuilder from "./src/DomBuilder";
-import EventUtil from "./src/EventUtil";
+import DomBuilder from "./src/core/DomBuilder";
+import EventUtil from "./src/core/EventUtil";
 
-export function cropperCrop(parentElement: any, fileInputElement: any, previewImageElement: any) {
+export function imageCropperListen(parentElement: any, fileInputElement: any, previewImageElement: any) {
 
 	let editor: Editor = null;
+
+	let preview: HTMLImageElement | null = null;
 
 	const destroyEditor = function () {
 		if (editor !== null) editor.destroy();
 		editor = null;
 	}
 
+	try {
+		preview = <HTMLImageElement>DomBuilder.of(previewImageElement)
+			.addEventListener('click', (e) => createEditor(preview.src))
+			.build();
+	} catch (e) {
+		console.log('No preview for cropper specified');
+		preview = null;
+	}
+
 	const createEditor = function (src: any) {
 		destroyEditor();
 		editor = new Editor(parentElement, src);
 		editor.addOnCropListener((blob: any) => {
-			try {
-				const preview = <HTMLImageElement>DomBuilder.of(previewImageElement).build();
+			if (preview != null) {
 				preview.src = URL.createObjectURL(blob);
-			} catch (e) {
-				console.log('No preview for cropper specified');
 			}
 			const fileInput = <HTMLInputElement>DomBuilder.of(fileInputElement).build();
 			const file = new File([blob], fileInput.value, {type: "image/jpeg", lastModified:new Date().getTime()});
@@ -48,4 +56,4 @@ export function cropperCrop(parentElement: any, fileInputElement: any, previewIm
 }
 
 // @ts-ignore
-if (window) window['cropperCrop'] = cropperCrop;
+if (window) window['imageCropperListen'] = imageCropperListen;

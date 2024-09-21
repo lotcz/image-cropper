@@ -63,6 +63,14 @@ export default class DomBuilder {
 		return this;
 	}
 
+	toggleAttr(name: string, isPresent: boolean, value: any = true): DomBuilder {
+		if (isPresent)
+			this.element.setAttribute(name, value)
+		else
+			this.element.removeAttribute(name);
+		return this;
+	}
+
 	html(content: string): DomBuilder {
 		this.element.innerHTML = content;
 		return this;

@@ -1,8 +1,8 @@
-import DomBuilder from "./DomBuilder";
+import DomBuilder from "./core/DomBuilder";
 import ImgProps from "./ImgProps";
 import Box from "./Box";
-import EditorComponent from "./EditorComponent";
-import Vector2 from "./Vector2";
+import EditorComponent from "./core/EditorComponent";
+import Vector2 from "./core/Vector2";
 
 export default class Preview extends EditorComponent {
 
@@ -18,7 +18,7 @@ export default class Preview extends EditorComponent {
 
 	constructor(parent: any, imgProps: ImgProps) {
 		super(parent, imgProps);
-		this.wrapper = DomBuilder.of('div').parent(parent).css('image-cropper-preview');
+		this.wrapper = DomBuilder.of('div').parent(parent).css('preview');
 		this.img = <HTMLImageElement>DomBuilder.of('img').parent(this.wrapper).css('visually-hidden').build();
 		this.canvas = <HTMLCanvasElement>DomBuilder.of('canvas').css('preview-canvas').parent(this.wrapper).build();
 		this.context2d = this.canvas.getContext('2d');
@@ -40,40 +40,39 @@ export default class Preview extends EditorComponent {
 
 	render() {
 		DomBuilder.of(this.canvas)
-			.attr('width', `${this.imgProps.canvasWidth}px`)
-			.attr('height', `${this.imgProps.canvasHeight}px`);
+			.attr('width', `${this.imgProps.canvasSize.x}px`)
+			.attr('height', `${this.imgProps.canvasSize.y}px`);
 
-		const actualWidth = this.imgProps.originalWidth * this.imgProps.zoom;
-		const actualHeight = this.imgProps.originalHeight * this.imgProps.zoom;
+		const actualWidth = this.imgProps.originalSize.x * this.imgProps.zoomImg;
+		const actualHeight = this.imgProps.originalSize.y * this.imgProps.zoomImg;
 
-		const diffX = (this.imgProps.canvasWidth - actualWidth) / 2;
-		const diffY = (this.imgProps.canvasHeight - actualHeight) / 2;
+		const diffX = (this.imgProps.canvasSize.x - actualWidth) / 2;
+		const diffY = (this.imgProps.canvasSize.y - actualHeight) / 2;
 
-		this.context2d.clearRect(0, 0, this.imgProps.canvasWidth, this.imgProps.canvasHeight);
+		this.context2d.clearRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 		this.context2d.drawImage(
 			this.img,
-			diffX > 0 ? 0 : -diffX / this.imgProps.zoom,
-			diffY > 0 ? 0 : -diffY / this.imgProps.zoom,
-			diffX > 0 ? this.imgProps.originalWidth : this.imgProps.canvasWidth / this.imgProps.zoom,
-			diffY > 0 ? this.imgProps.originalHeight : this.imgProps.canvasHeight / this.imgProps.zoom,
+			diffX > 0 ? 0 : -diffX / this.imgProps.zoomImg,
+			diffY > 0 ? 0 : -diffY / this.imgProps.zoomImg,
+			diffX > 0 ? this.imgProps.originalSize.x : this.imgProps.canvasSize.x / this.imgProps.zoomImg,
+			diffY > 0 ? this.imgProps.originalSize.y : this.imgProps.canvasSize.y / this.imgProps.zoomImg,
 			diffX > 0 ? diffX : 0,
 			diffY > 0 ? diffY : 0,
-			diffX > 0 ? actualWidth : this.imgProps.canvasWidth,
-			diffY > 0 ? actualHeight : this.imgProps.canvasHeight
+			diffX > 0 ? actualWidth : this.imgProps.canvasSize.x,
+			diffY > 0 ? actualHeight : this.imgProps.canvasSize.y
 		);
 
 	}
 
 	crop() {
-
-		const canvasSize = new Vector2(this.imgProps.canvasWidth, this.imgProps.canvasHeight);
-		const actualSize = new Vector2(this.imgProps.originalWidth, this.imgProps.originalHeight).multiply(this.imgProps.zoom);
+		const canvasSize = this.imgProps.canvasSize.clone();
+		const actualSize = this.imgProps.originalSize.multiply(this.imgProps.zoomImg);
 		const imageCorner = canvasSize.sub(actualSize).multiply(0.5);
-		const boxCorner = new Vector2(this.imgProps.boxStartX, this.imgProps.boxStartY);
-		const boxSize = new Vector2(this.imgProps.boxWidth, this.imgProps.boxHeight);
+		const boxCorner = this.imgProps.boxStart.clone();
+		const boxSize = this.imgProps.boxSize.clone();
 
-		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoom);
-		const cropSize = boxSize.multiply(1/this.imgProps.zoom);
+		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoomImg);
+		const cropSize = boxSize.multiply(1/this.imgProps.zoomImg);
 
 		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
 			.parent(this.wrapper)

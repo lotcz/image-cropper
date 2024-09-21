@@ -1,7 +1,7 @@
-import DomBuilder from "./DomBuilder";
+import DomBuilder from "./core/DomBuilder";
 import ImgProps from "./ImgProps";
-import EditorComponent from "./EditorComponent";
-import EventUtil from "./EventUtil";
+import EditorComponent from "./core/EditorComponent";
+import EventUtil from "./core/EventUtil";
 
 export default class Toolbar extends EditorComponent {
 
@@ -12,6 +12,8 @@ export default class Toolbar extends EditorComponent {
 	originalInfo: DomBuilder;
 
 	croppedInfo: DomBuilder;
+
+	aspectSelector: DomBuilder;
 
 	buttons: DomBuilder;
 
@@ -27,6 +29,7 @@ export default class Toolbar extends EditorComponent {
 		this.zoomInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper);
 		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
 
 		this.cropButton = DomBuilder.of('button')
@@ -49,8 +52,9 @@ export default class Toolbar extends EditorComponent {
 	}
 
 	render() {
-		this.zoomInfo.text(`Zoom: ${this.imgProps.zoom}`);
-		this.originalInfo.text(`Original: ${this.imgProps.originalWidth}px x ${this.imgProps.originalHeight}px`);
-		this.croppedInfo.text(`Cropped: ${Math.abs(this.imgProps.boxWidth)}px x ${Math.abs(this.imgProps.boxHeight)}px`);
+		this.zoomInfo.text(`Zoom: ${this.imgProps.zoomImg}`);
+		this.originalInfo.text(`Original: ${this.imgProps.originalSize.x}px x ${this.imgProps.originalSize.y}px`);
+		this.croppedInfo.text(`Cropped: ${Math.abs(this.imgProps.boxSize.x)}px x ${Math.abs(this.imgProps.boxSize.y)}px`);
+		this.cropButton.toggleAttr('disabled', this.imgProps.boxSize.size() === 0);
 	}
 }

@@ -1,5 +1,5 @@
 import DomBuilder from "./DomBuilder";
-import ImgProps from "./ImgProps";
+import ImgProps from "../ImgProps";
 import LogicalComponent from "./LogicalComponent";
 
 export default class EditorComponent extends LogicalComponent {
