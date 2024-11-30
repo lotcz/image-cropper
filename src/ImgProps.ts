@@ -13,11 +13,13 @@ export default class ImgProps extends LogicalComponent {
 
 	params: CropperParams;
 
-	presetAspects: Array<Vector2> = [];
+	presetAspects?: Array<Vector2>;
 
 	selectedAspect: Vector2 = new Vector2();
 
-	presetSizes: Array<Vector2> = [];
+	presetMaxSizes?: Array<Vector2>;
+
+	selectedMaxSize: Vector2 = new Vector2();
 
 	zoomImg: number = 1;
 
@@ -39,7 +41,7 @@ export default class ImgProps extends LogicalComponent {
 
 	dragStart: Vector2 = new Vector2();
 
-	constructor() {
+	constructor(params: CropperParams) {
 		super();
 		this.addChild(this.canvasSize);
 		this.addChild(this.originalSize);
@@ -48,6 +50,8 @@ export default class ImgProps extends LogicalComponent {
 		this.addChild(this.boxSize);
 		this.addChild(this.offset);
 		this.addChild(this.dragStart);
+
+		this.params = params;
 
 		const updateBoxHandler = () => this.updateBox();
 		this.boxStart.addChangedListener(updateBoxHandler);
@@ -69,6 +73,7 @@ export default class ImgProps extends LogicalComponent {
 
 	setSelectedAspectIndex(i: number) {
 		this.selectedAspect.set(this.presetAspects[i]);
+		this.selectedMaxSize.set(this.presetMaxSizes[i]);
 	}
 
 	updateAspect() {

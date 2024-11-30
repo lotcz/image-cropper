@@ -21,11 +21,11 @@ export default class Editor extends EditorComponent {
 	initialized: boolean = false;
 
 	constructor(params: CropperParams) {
-		super(document.body, new ImgProps());
-		this.imgProps.params = params;
+		super(document.body, new ImgProps(params));
+
 		if (params.presetSizes) {
-			this.imgProps.presetSizes = params.presetSizes.map(ps => new Vector2(ps));
-			this.imgProps.presetAspects = this.imgProps.presetSizes.map(ps => ps.toAspectRatio());
+			this.imgProps.presetMaxSizes = params.presetSizes.map(ps => new Vector2(ps));
+			this.imgProps.presetAspects = this.imgProps.presetMaxSizes.map(ps => ps.toAspectRatio());
 			this.imgProps.setSelectedAspectIndex(0);
 		}
 		this.wrapper = DomBuilder.of('div')
@@ -101,6 +101,7 @@ export default class Editor extends EditorComponent {
 		if (this.imgProps.originalSize.y > this.imgProps.canvasSize.y) {
 			zoomH = (this.imgProps.canvasSize.y - 10) / this.imgProps.originalSize.y;
 		}
+		this.imgProps.setSelectedAspectIndex(0);
 		this.initialized = true;
 		this.imgProps.setZoom(Math.min(zoomH, zoomW));
 	}

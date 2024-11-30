@@ -17,6 +17,8 @@ export default class Toolbar extends EditorComponent {
 
 	aspectSelector: DomBuilder;
 
+	sizeSelector: DomBuilder;
+
 	buttons: DomBuilder;
 
 	cropButton: DomBuilder;
@@ -33,7 +35,46 @@ export default class Toolbar extends EditorComponent {
 		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper);
+		this.sizeSelector = DomBuilder.of('div').parent(this.wrapper);
 		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
+
+		// ASPECT
+
+		const aspSelect = DomBuilder.of('select')
+			.parent(this.aspectSelector)
+			.attr('id', 'aspect')
+			.attr('name', 'aspect')
+			.addEventListener(
+				'change',
+				(e) => this.imgProps.setSelectedAspectIndex(Number((e.target as HTMLInputElement).value))
+			);
+		this.imgProps.presetAspects.forEach(
+			(a, i) => DomBuilder.of('option')
+				.parent(aspSelect)
+				.attr('value', i)
+				.text(`${a.x}:${a.y}`)
+				.build()
+		);
+
+		// SIZE
+
+		const sizeSelect = DomBuilder.of('select')
+			.parent(this.sizeSelector)
+			.attr('id', 'size')
+			.attr('name', 'size')
+			.addEventListener(
+				'change',
+				(e) => this.imgProps.setSelectedAspectIndex(Number((e.target as HTMLInputElement).value))
+			);
+		this.imgProps.presetMaxSizes.forEach(
+			(a, i) => DomBuilder.of('option')
+				.parent(sizeSelect)
+				.attr('value', i)
+				.text(`${a.x}:${a.y}`)
+				.build()
+		);
+
+		// BUTTONS
 
 		this.cropButton = DomBuilder.of('button')
 			.parent(this.buttons)
@@ -51,21 +92,7 @@ export default class Toolbar extends EditorComponent {
 				this.imgProps.triggerEvent('close');
 			});
 
-		const aspSelect = DomBuilder.of('select')
-			.parent(this.aspectSelector)
-			.attr('id', 'aspect')
-			.attr('name', 'aspect')
-			.addEventListener(
-				'change',
-				(e) => this.imgProps.setSelectedAspectIndex(Number((e.target as HTMLInputElement).value))
-			);
-		this.imgProps.presetAspects.forEach(
-			(a, i) => DomBuilder.of('option')
-				.parent(aspSelect)
-				.attr('value', i)
-				.text(`${a.x}:${a.y}`)
-				.build()
-		)
+
 
 		this.imgProps.addChangedListener(() => this.render());
 	}
