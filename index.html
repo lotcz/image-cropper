@@ -14,12 +14,18 @@
 			<h3>Image</h3>
 			<input type="file" id="image_upload" name="image_upload" />
 			<img id="image_preview" alt="preview" src=""/>
+			<button type="submit">Submit</button>
 		</form>
 		<script>
 			imageCropperListen(
-				"#upload_form",
 				"#image_upload",
-				"#image_preview"
+				"#image_preview",
+				[
+					[100, 100],
+					[320, 200],
+					[1600, 900],
+					[900, 1600]
+				]
 			);
 		</script>
     </body>

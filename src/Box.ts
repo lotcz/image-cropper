@@ -23,11 +23,11 @@ export default class Box extends EditorComponent {
 			.attr('width', `${this.imgProps.canvasSize.x}px`)
 			.attr('height', `${this.imgProps.canvasSize.y}px`);
 
-		this.context2d.fillStyle = 'rgba(0, 0, 0, 0.85)';
 		this.context2d.clearRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 
 		if (this.imgProps.boxSize.size() === 0) return;
 
+		this.context2d.fillStyle = 'rgba(0, 0, 0, 0.85)';
 		this.context2d.fillRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 		this.context2d.clearRect(
 			this.imgProps.boxStartSanitized.x,
@@ -35,7 +35,8 @@ export default class Box extends EditorComponent {
 			Math.abs(this.imgProps.boxSize.x),
 			Math.abs(this.imgProps.boxSize.y)
 		);
-		this.context2d.strokeStyle = '#ffffff';
+		this.context2d.fillStyle = 'rgba(255, 255, 255, 1)';
+		this.context2d.strokeStyle = 'rgba(255, 255, 255, 1)';
 		this.context2d.lineWidth = 1;
 		this.context2d.strokeRect(
 			this.imgProps.boxStartSanitized.x,

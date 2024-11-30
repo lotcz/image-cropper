@@ -6,8 +6,11 @@ import ImgProps from "./ImgProps";
 import EditorComponent from "./core/EditorComponent";
 import {EventHandler} from "./core/LogicalComponent";
 import Vector2 from "./core/Vector2";
+import {CropperParams} from "./CropperParams";
 
 export default class Editor extends EditorComponent {
+
+	language: string = "cs";
 
 	wrapper: DomBuilder;
 
@@ -17,11 +20,16 @@ export default class Editor extends EditorComponent {
 
 	initialized: boolean = false;
 
-	constructor(parent: any, src: any) {
-		super(parent, new ImgProps());
-		this.imgProps.src = src;
+	constructor(params: CropperParams) {
+		super(document.body, new ImgProps());
+		this.imgProps.params = params;
+		if (params.presetSizes) {
+			this.imgProps.presetSizes = params.presetSizes.map(ps => new Vector2(ps));
+			this.imgProps.presetAspects = this.imgProps.presetSizes.map(ps => ps.toAspectRatio());
+			this.imgProps.setSelectedAspectIndex(0);
+		}
 		this.wrapper = DomBuilder.of('div')
-			.parent(parent)
+			.parent(this.parent)
 			.css('image-cropper-editor');
 
 		this.preview = new Preview(this.wrapper, this.imgProps);

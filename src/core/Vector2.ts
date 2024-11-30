@@ -5,7 +5,7 @@ export default class Vector2 extends LogicalComponent {
 	x: number;
 	y: number;
 
-	constructor(x: number = 0, y: number = 0) {
+	constructor(x: number | Array<number> | Vector2 = 0, y?: number) {
 		super();
 		this.set(x, y);
 	}
@@ -23,9 +23,12 @@ export default class Vector2 extends LogicalComponent {
 	 * @param x Number|Vector2
 	 * @param y Number|undefined
 	 */
-	set(x: number | Vector2, y? : number): void {
+	set(x: number | Array<number> | Vector2, y? : number): void {
 		if (x instanceof Vector2) {
 			this.set(x.x, x.y);
+			return;
+		} else if (x instanceof Array) {
+			this.set(x[0], x[1]);
 			return;
 		}
 
@@ -74,7 +77,36 @@ export default class Vector2 extends LogicalComponent {
 		return new Vector2(this.x, this.y);
 	}
 
+	toAspectRatio(): Vector2 {
+		let gcd = Util.gcd(this.x, this.y);
+		if (gcd > 1) return new Vector2(this.x / gcd, this.y / gcd).toAspectRatio();
+		return this.clone();
+	}
+
 	toString(decimals = 2): string {
 		return `[${Util.round(this.x, decimals)},${Util.round(this.y, decimals)}]`;
 	}
+
+	toJson(format = false): string {
+		return JSON.stringify({x: this.x, y: this.y}, undefined, format ? 2 : undefined);
+	}
+
+	/**
+	 * Return vector whose sizes are equal or less than clamping value while keeping the aspect ratio.
+	 */
+	clamp(max: Vector2): Vector2 {
+		const rx = max.x < this.x ? max.x / this.x : 1;
+		const ry = max.y < this.y ? max.y / this.y : 1;
+		return this.multiply(Math.min(rx, ry));
+	}
+
+	/**
+	 * Return vector whose one size is equal and other is less than max clamping value while keeping the aspect ratio.
+	 */
+	fill(target: Vector2): Vector2 {
+		const rx = target.x / this.x;
+		const ry = target.y / this.y;
+		return this.multiply(Math.max(rx, ry)).clamp(target);
+	}
+
 }

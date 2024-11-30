@@ -1,5 +1,6 @@
 import LogicalComponent from "./core/LogicalComponent";
 import Vector2 from "./core/Vector2";
+import {CropperParams} from "./CropperParams";
 
 export enum ImgMode {
 	Crop,
@@ -10,7 +11,13 @@ export default class ImgProps extends LogicalComponent {
 
 	mode: ImgMode = ImgMode.Crop;
 
-	src: any;
+	params: CropperParams;
+
+	presetAspects: Array<Vector2> = [];
+
+	selectedAspect: Vector2 = new Vector2();
+
+	presetSizes: Array<Vector2> = [];
 
 	zoomImg: number = 1;
 
@@ -19,8 +26,6 @@ export default class ImgProps extends LogicalComponent {
 	originalSize: Vector2 = new Vector2();
 
 	boxSelecting: boolean = false;
-
-	boxZoom: number = 1;
 
 	boxStart: Vector2 = new Vector2();
 
@@ -47,6 +52,10 @@ export default class ImgProps extends LogicalComponent {
 		const updateBoxHandler = () => this.updateBox();
 		this.boxStart.addChangedListener(updateBoxHandler);
 		this.boxSize.addChangedListener(updateBoxHandler);
+
+		const updateAspectHandler = () => this.updateAspect();
+		this.selectedAspect.addChangedListener(updateAspectHandler);
+		this.canvasSize.addChangedListener(updateAspectHandler);
 	}
 
 	setZoom(zoom: number) {
@@ -56,6 +65,16 @@ export default class ImgProps extends LogicalComponent {
 
 	setOriginalSize(width: number, height: number) {
 		this.originalSize.set(width, height);
+	}
+
+	setSelectedAspectIndex(i: number) {
+		this.selectedAspect.set(this.presetAspects[i]);
+	}
+
+	updateAspect() {
+		const maxViewPort = this.canvasSize.multiply(0.9);
+		this.boxSize.set(this.selectedAspect.fill(maxViewPort));
+		this.boxStart.set(this.canvasSize.subtract(this.boxSize).multiply(0.5));
 	}
 
 	setOffset(x: number, y: number) {

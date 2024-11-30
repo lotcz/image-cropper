@@ -3,6 +3,7 @@ import ImgProps from "./ImgProps";
 import Box from "./Box";
 import EditorComponent from "./core/EditorComponent";
 import Vector2 from "./core/Vector2";
+import {CropperResult} from "./CropperResult";
 
 export default class Preview extends EditorComponent {
 
@@ -32,7 +33,7 @@ export default class Preview extends EditorComponent {
 				this.img.naturalHeight
 			)
 		);
-		this.img.src = this.imgProps.src;
+		this.img.src = this.imgProps.params.imgSrc;
 
 		this.imgProps.addChangedListener(() => this.render());
 		this.imgProps.addEventListener('crop', () => this.crop());
@@ -94,8 +95,13 @@ export default class Preview extends EditorComponent {
 		);
 		canvas.toBlob(
 			(blob: Blob | null) => {
-				if (blob === null) console.error('Cropped blob is null');
-				this.imgProps.triggerEvent('cropped', blob);
+				if (blob === null) console.error('Cropped blob is null!');
+				const result: CropperResult = {
+					src: blob,
+					originalSize: this.imgProps.originalSize,
+					croppedSize: cropSize
+				};
+				this.imgProps.triggerEvent('cropped', result);
 				this.imgProps.triggerEvent('close');
 			},
 			"image/jpeg",

@@ -1,8 +1,10 @@
 import Editor from './src/Editor'
 import DomBuilder from "./src/core/DomBuilder";
 import EventUtil from "./src/core/EventUtil";
+import {CropperResult} from "./src/CropperResult";
+import Vector2 from "./src/core/Vector2";
 
-export function imageCropperListen(parentElement: any, fileInputElement: any, previewImageElement: any) {
+export function imageCropperListen(fileInputElement: any, previewImageElement: any, sizes?: Array<Array<number>>) {
 
 	let editor: Editor = null;
 
@@ -14,9 +16,7 @@ export function imageCropperListen(parentElement: any, fileInputElement: any, pr
 	}
 
 	try {
-		preview = <HTMLImageElement>DomBuilder.of(previewImageElement)
-			.addEventListener('click', (e) => createEditor(preview.src))
-			.build();
+		preview = <HTMLImageElement>DomBuilder.of(previewImageElement).build();
 	} catch (e) {
 		console.log('No preview for cropper specified');
 		preview = null;
@@ -24,13 +24,21 @@ export function imageCropperListen(parentElement: any, fileInputElement: any, pr
 
 	const createEditor = function (src: any) {
 		destroyEditor();
-		editor = new Editor(parentElement, src);
-		editor.addOnCropListener((blob: any) => {
+		editor = new Editor(
+			{
+				imgSrc: src,
+				presetSizes: sizes || []
+			}
+		);
+		editor.addOnCropListener((result: CropperResult) => {
 			if (preview != null) {
-				preview.src = URL.createObjectURL(blob);
+				DomBuilder.of(preview)
+					.attr('width', result.croppedSize.x)
+					.attr('height', result.croppedSize.y)
+					.attr('src', URL.createObjectURL(result.src));
 			}
 			const fileInput = <HTMLInputElement>DomBuilder.of(fileInputElement).build();
-			const file = new File([blob], fileInput.value, {type: "image/jpeg", lastModified:new Date().getTime()});
+			const file = new File([result.src], fileInput.value, {type: "image/jpeg", lastModified:new Date().getTime()});
 			const container = new DataTransfer();
 			container.items.add(file);
 			fileInput.files = container.files;
