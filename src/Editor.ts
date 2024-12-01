@@ -83,28 +83,7 @@ export default class Editor extends EditorComponent {
 		window.addEventListener('resize', () => this.updateCanvasSize());
 		this.updateCanvasSize();
 
-		this.imgProps.addChangedListener(() => this.initialize());
-		this.initialize();
-
 		this.imgProps.addEventListener('close', () => this.destroy());
-	}
-
-	initialize() {
-		if (this.initialized) return;
-		if (this.imgProps.canvasSize.size() === 0) return;
-		if (this.imgProps.originalSize.size() === 0) return;
-
-		let zoomW = 1;
-		if (this.imgProps.originalSize.x > this.imgProps.canvasSize.x) {
-			zoomW = (this.imgProps.canvasSize.x - 10) / this.imgProps.originalSize.x;
-		}
-		let zoomH = 1;
-		if (this.imgProps.originalSize.y > this.imgProps.canvasSize.y) {
-			zoomH = (this.imgProps.canvasSize.y - 10) / this.imgProps.originalSize.y;
-		}
-		this.imgProps.setSelectedAspectIndex(0);
-		this.initialized = true;
-		this.imgProps.setZoom(Math.min(zoomH, zoomW));
 	}
 
 	updateCanvasSize() {

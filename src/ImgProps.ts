@@ -14,6 +14,8 @@ export default class ImgProps extends LogicalComponent {
 
 	zoomImg: number = 1;
 
+	minZoom: number = 1;
+
 	canvasSize: Vector2 = new Vector2();
 
 	originalSize: Vector2 = new Vector2();
@@ -44,7 +46,6 @@ export default class ImgProps extends LogicalComponent {
 
 		this.params = params;
 
-
 		const updateBoxHandler = () => this.updateBox();
 		this.boxStart.addChangedListener(updateBoxHandler);
 		this.boxSize.addChangedListener(updateBoxHandler);
@@ -52,10 +53,14 @@ export default class ImgProps extends LogicalComponent {
 		const updateAspectHandler = () => this.updateAspect();
 		this.selectedAspect.addChangedListener(updateAspectHandler);
 		this.canvasSize.addChangedListener(updateAspectHandler);
+
+		const updateMinZoomHandler = () => this.updateMinZoom();
+		this.originalSize.addChangedListener(updateMinZoomHandler);
+		this.boxSize.addChangedListener(updateMinZoomHandler);
 	}
 
 	setZoom(zoom: number) {
-		this.zoomImg = zoom;
+		this.zoomImg = Math.max(this.minZoom, zoom);
 		this.triggerChangedEvent();
 	}
 
@@ -71,6 +76,14 @@ export default class ImgProps extends LogicalComponent {
 		const maxViewPort = this.canvasSize.multiply(0.9);
 		this.boxSize.set(this.selectedAspect.fill(maxViewPort));
 		this.boxStart.set(this.canvasSize.subtract(this.boxSize).multiply(0.5));
+	}
+
+	updateMinZoom() {
+		const minZoomX = this.boxSize.x / this.originalSize.x;
+		const minZoomY = this.boxSize.y / this.originalSize.y;
+		this.minZoom = Math.max(minZoomX, minZoomY);
+		if (this.minZoom > this.zoomImg) this.setZoom(this.minZoom);
+		this.triggerChangedEvent();
 	}
 
 	setOffset(x: number, y: number) {
