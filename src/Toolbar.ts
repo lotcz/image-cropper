@@ -17,7 +17,7 @@ export default class Toolbar extends EditorComponent {
 
 	aspectSelector: DomBuilder;
 
-	sizeSelector: DomBuilder;
+	maxSizeInfo: DomBuilder;
 
 	buttons: DomBuilder;
 
@@ -35,8 +35,14 @@ export default class Toolbar extends EditorComponent {
 		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper);
-		this.sizeSelector = DomBuilder.of('div').parent(this.wrapper);
+		this.maxSizeInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
+
+		// MAX SIZE
+
+		if (this.imgProps.maxSize) {
+			this.maxSizeInfo.text(`Max Size: [${this.imgProps.maxSize.x}px x ${this.imgProps.maxSize.y}px]`);
+		}
 
 		// ASPECT
 
@@ -51,24 +57,6 @@ export default class Toolbar extends EditorComponent {
 		this.imgProps.presetAspects.forEach(
 			(a, i) => DomBuilder.of('option')
 				.parent(aspSelect)
-				.attr('value', i)
-				.text(`${a.x}:${a.y}`)
-				.build()
-		);
-
-		// SIZE
-
-		const sizeSelect = DomBuilder.of('select')
-			.parent(this.sizeSelector)
-			.attr('id', 'size')
-			.attr('name', 'size')
-			.addEventListener(
-				'change',
-				(e) => this.imgProps.setSelectedAspectIndex(Number((e.target as HTMLInputElement).value))
-			);
-		this.imgProps.presetMaxSizes.forEach(
-			(a, i) => DomBuilder.of('option')
-				.parent(sizeSelect)
 				.attr('value', i)
 				.text(`${a.x}:${a.y}`)
 				.build()
@@ -91,8 +79,6 @@ export default class Toolbar extends EditorComponent {
 				EventUtil.stop(e);
 				this.imgProps.triggerEvent('close');
 			});
-
-
 
 		this.imgProps.addChangedListener(() => this.render());
 	}

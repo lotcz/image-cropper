@@ -21,11 +21,11 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build-less": "lessc style/style.less build/style.css",
+		"build-less": "lessc style/image-cropper.less build/image-cropper.css",
 		"build-webpack": "webpack --config webpack.prod.js",
 		"build": "npm run build-less && npm run build-webpack",
 		"debug-serve-webpack": "webpack serve --open --config webpack.dev.js",
-		"debug-watch-less": "less-watch-compiler style build style.less",
+		"debug-watch-less": "less-watch-compiler style build image-cropper.less",
 		"debug": "concurrently \"npm:debug-*\""
 	},
 	"author": "Karel Zavadil",

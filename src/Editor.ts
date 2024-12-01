@@ -23,11 +23,12 @@ export default class Editor extends EditorComponent {
 	constructor(params: CropperParams) {
 		super(document.body, new ImgProps(params));
 
-		if (params.presetSizes) {
-			this.imgProps.presetMaxSizes = params.presetSizes.map(ps => new Vector2(ps));
-			this.imgProps.presetAspects = this.imgProps.presetMaxSizes.map(ps => ps.toAspectRatio());
-			this.imgProps.setSelectedAspectIndex(0);
+		if (params.maxSize) {
+			this.imgProps.maxSize = new Vector2(params.maxSize);
 		}
+		this.imgProps.presetAspects = params.presetAspects.map(ps => new Vector2(ps).toAspectRatio());
+		this.imgProps.setSelectedAspectIndex(0);
+
 		this.wrapper = DomBuilder.of('div')
 			.parent(this.parent)
 			.css('image-cropper-editor');

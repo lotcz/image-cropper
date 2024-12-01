@@ -4,7 +4,12 @@ import EventUtil from "./src/core/EventUtil";
 import {CropperResult} from "./src/CropperResult";
 import Vector2 from "./src/core/Vector2";
 
-export function imageCropperListen(fileInputElement: any, previewImageElement: any, sizes?: Array<Array<number>>) {
+export function imageCropperListen(
+	fileInputElement: any,
+	previewImageElement: any,
+	aspects?: Array<Array<number>>,
+	size?: Array<number>
+) {
 
 	let editor: Editor = null;
 
@@ -27,7 +32,8 @@ export function imageCropperListen(fileInputElement: any, previewImageElement: a
 		editor = new Editor(
 			{
 				imgSrc: src,
-				presetSizes: sizes || []
+				presetAspects: aspects || [],
+				maxSize: size
 			}
 		);
 		editor.addOnCropListener((result: CropperResult) => {

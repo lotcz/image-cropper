@@ -2,6 +2,8 @@ export type CropperParams = {
 
 	imgSrc: any;
 
-	presetSizes?: Array<Array<number>>;
+	presetAspects: Array<Array<number>>;
+
+	maxSize?: Array<number>;
 
 }

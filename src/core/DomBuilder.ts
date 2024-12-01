@@ -29,8 +29,8 @@ export default class DomBuilder {
 		if (something instanceof DomBuilder) return something;
 		if (something instanceof HTMLElement) return DomBuilder.ofElement(something);
 		if (typeof something === 'string') {
+			if (something.includes(' ') || something.startsWith('.')) return DomBuilder.ofQuery(something);
 			if (something.startsWith('#')) return DomBuilder.ofId(something.substring(1));
-			if (something.startsWith('.')) return DomBuilder.ofQuery(something.substring(1));
 			return DomBuilder.ofTag(something);
 		}
 		throw new Error(`Could not determine what could be DOM element Dom Builder! Provided: "${something}"`);

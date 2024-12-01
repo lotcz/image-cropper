@@ -7,7 +7,7 @@ module.exports = {
 		new CopyWebpackPlugin({
 			patterns: [
 				{from: './index.html', to: ''},
-				{from: './build/style.css', to: ''}
+				{from: './build/image-cropper.css', to: ''}
 			]
 		})
 	],

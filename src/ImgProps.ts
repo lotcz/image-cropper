@@ -2,14 +2,7 @@ import LogicalComponent from "./core/LogicalComponent";
 import Vector2 from "./core/Vector2";
 import {CropperParams} from "./CropperParams";
 
-export enum ImgMode {
-	Crop,
-	Resize
-}
-
 export default class ImgProps extends LogicalComponent {
-
-	mode: ImgMode = ImgMode.Crop;
 
 	params: CropperParams;
 
@@ -17,9 +10,7 @@ export default class ImgProps extends LogicalComponent {
 
 	selectedAspect: Vector2 = new Vector2();
 
-	presetMaxSizes?: Array<Vector2>;
-
-	selectedMaxSize: Vector2 = new Vector2();
+	maxSize: Vector2 | null = null;
 
 	zoomImg: number = 1;
 
@@ -53,6 +44,7 @@ export default class ImgProps extends LogicalComponent {
 
 		this.params = params;
 
+
 		const updateBoxHandler = () => this.updateBox();
 		this.boxStart.addChangedListener(updateBoxHandler);
 		this.boxSize.addChangedListener(updateBoxHandler);
@@ -73,7 +65,6 @@ export default class ImgProps extends LogicalComponent {
 
 	setSelectedAspectIndex(i: number) {
 		this.selectedAspect.set(this.presetAspects[i]);
-		this.selectedMaxSize.set(this.presetMaxSizes[i]);
 	}
 
 	updateAspect() {
