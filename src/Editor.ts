@@ -44,29 +44,17 @@ export default class Editor extends EditorComponent {
 
 		this.wrapper.addEventListener('mousedown', (e: MouseEvent) => {
 			EventUtil.stop(e);
-			if (e.button === 0) {
-				if (!this.imgProps.boxSelecting) {
-					this.imgProps.boxStart.set(e.clientX, e.clientY);
-					this.imgProps.boxSize.set(0, 0);
-				}
-				this.imgProps.boxSelecting = true;
-			}
-			if (e.button === 2) {
-				if (!this.imgProps.dragging) {
-					this.imgProps.dragStart.set(e.clientX, e.clientY);
-				}
-				this.imgProps.dragging = true;
-			}
+			this.startDrag(new Vector2(e.clientX, e.clientY));
+		});
+
+		this.wrapper.addEventListener('mousedown', (e: MouseEvent) => {
+			EventUtil.stop(e);
+			this.startDrag(new Vector2(e.clientX, e.clientY));
 		});
 
 		this.wrapper.addEventListener('mouseup', (e: MouseEvent) => {
 			EventUtil.stop(e);
-			if (e.button === 0) {
-				this.imgProps.boxSelecting = false;
-			}
-			if (e.button === 2) {
-				this.imgProps.dragging = false;
-			}
+			this.stopDrag();
 		});
 
 		this.wrapper.addEventListener('mousemove', (e: MouseEvent) => {
@@ -92,6 +80,25 @@ export default class Editor extends EditorComponent {
 
 	addOnCropListener(handler: EventHandler) {
 		this.imgProps.addEventListener('cropped', handler);
+	}
+
+	startSelect(pos: Vector2) {
+		if (!this.imgProps.boxSelecting) {
+			this.imgProps.boxStart.set(pos);
+			this.imgProps.boxSize.set(0, 0);
+		}
+		this.imgProps.boxSelecting = true;
+	}
+
+	startDrag(pos: Vector2) {
+		if (!this.imgProps.dragging) {
+			this.imgProps.dragStart.set(pos);
+		}
+		this.imgProps.dragging = true;
+	}
+
+	stopDrag() {
+		this.imgProps.dragging = false;
 	}
 
 	destroy() {

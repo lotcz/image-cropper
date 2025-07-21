@@ -15,6 +15,8 @@ export default class Toolbar extends EditorComponent {
 
 	croppedInfo: DomBuilder;
 
+	offsetInfo: DomBuilder;
+
 	aspectSelector: DomBuilder;
 
 	maxSizeInfo: DomBuilder;
@@ -34,6 +36,7 @@ export default class Toolbar extends EditorComponent {
 		this.zoomInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.offsetInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper);
 		this.maxSizeInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
@@ -64,6 +67,15 @@ export default class Toolbar extends EditorComponent {
 
 		// BUTTONS
 
+		DomBuilder.of('a')
+			.parent(this.buttons)
+			.attr('href', '#')
+			.text(Lang.t('Use original'))
+			.addEventListener('click', (e: Event) => {
+				EventUtil.stop(e);
+				this.imgProps.triggerEvent('close');
+			});
+
 		this.cropButton = DomBuilder.of('button')
 			.parent(this.buttons)
 			.text(Lang.t('Crop'))
@@ -72,21 +84,14 @@ export default class Toolbar extends EditorComponent {
 				this.imgProps.triggerEvent('crop');
 			});
 
-		DomBuilder.of('button')
-			.parent(this.buttons)
-			.text(Lang.t('Use original'))
-			.addEventListener('click', (e: Event) => {
-				EventUtil.stop(e);
-				this.imgProps.triggerEvent('close');
-			});
-
 		this.imgProps.addChangedListener(() => this.render());
 	}
 
 	render() {
-		this.zoomInfo.text(`Zoom: ${Util.round(this.imgProps.zoomImg, 2)}`);
+		this.zoomInfo.text(`Zoom: ${Util.round(this.imgProps.zoomImg, 2)} (min: ${Util.round(this.imgProps.minZoom, 2)})`);
 		this.originalInfo.text(`Original: ${this.imgProps.originalSize.x}px x ${this.imgProps.originalSize.y}px`);
 		this.croppedInfo.text(`Cropped: ${Util.round(Math.abs(this.imgProps.boxSize.x), 1)}px x ${Util.round(Math.abs(this.imgProps.boxSize.y), 1)}px`);
+		this.offsetInfo.text(`Offset: ${this.imgProps.offset.round().toString()}`);
 		this.cropButton.toggleAttr('disabled', this.imgProps.boxSize.size() === 0);
 	}
 }

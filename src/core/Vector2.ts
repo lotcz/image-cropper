@@ -32,6 +32,8 @@ export default class Vector2 extends LogicalComponent {
 			return;
 		}
 
+		if (y === undefined) y = 0;
+
 		if (this.x !== x || this.y !== y) {
 			this.x = Number(x);
 			this.y = y;

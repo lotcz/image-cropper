@@ -79,11 +79,17 @@ export default class ImgProps extends LogicalComponent {
 	}
 
 	updateMinZoom() {
+		if (this.boxSize.size() === 0 || this.originalSize.size() === 0) {
+			return;
+		}
 		const minZoomX = this.boxSize.x / this.originalSize.x;
 		const minZoomY = this.boxSize.y / this.originalSize.y;
-		this.minZoom = Math.max(minZoomX, minZoomY);
-		if (this.minZoom > this.zoomImg) this.setZoom(this.minZoom);
-		this.triggerChangedEvent();
+		const minZoom = Math.max(minZoomX, minZoomY);
+		if (minZoom > 0) {
+			this.minZoom = minZoom;
+			this.setZoom(this.zoomImg);
+			this.triggerChangedEvent();
+		}
 	}
 
 	setOffset(x: number, y: number) {
