@@ -73,11 +73,17 @@ export default class Preview extends EditorComponent {
 		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoomImg);
 		const cropSize = boxSize.multiply(1/this.imgProps.zoomImg);
 
+		const scaleX = this.imgProps.maxSize.x / cropSize.x;
+		const scaleY = this.imgProps.maxSize.y / cropSize.y;
+		const scale = Math.min(1, scaleX, scaleY);
+
+		const finalSize = cropSize.multiply(scale);
+
 		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
 			.parent(this.wrapper)
 			.css('visually-hidden')
-			.attr('width', `${Math.abs(cropSize.x)}px`)
-			.attr('height', `${Math.abs(cropSize.y)}px`)
+			.attr('width', `${Math.abs(finalSize.x)}px`)
+			.attr('height', `${Math.abs(finalSize.y)}px`)
 			.build();
 		const context2d = canvas.getContext('2d');
 		context2d.drawImage(
@@ -88,8 +94,8 @@ export default class Preview extends EditorComponent {
 			cropSize.y,
 			0,
 			0,
-			cropSize.x,
-			cropSize.y
+			finalSize.x,
+			finalSize.y
 		);
 		canvas.toBlob(
 			(blob: Blob | null) => {

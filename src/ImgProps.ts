@@ -46,6 +46,7 @@ export default class ImgProps extends LogicalComponent {
 		this.addChild(this.boxStartSanitized);
 		this.addChild(this.boxSize);
 		this.addChild(this.offset);
+		this.addChild(this.offsetLimit);
 		this.addChild(this.offsetScaled);
 		this.addChild(this.dragStart);
 
