@@ -57,6 +57,11 @@ export default class Editor extends EditorComponent {
 			this.stopDrag();
 		});
 
+		this.wrapper.addEventListener('mouseout', (e: MouseEvent) => {
+			EventUtil.stop(e);
+			this.stopDrag();
+		});
+
 		this.wrapper.addEventListener('mousemove', (e: MouseEvent) => {
 			const pos = new Vector2(e.clientX, e.clientY);
 			if (this.imgProps.dragging) {

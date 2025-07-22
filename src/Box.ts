@@ -27,7 +27,7 @@ export default class Box extends EditorComponent {
 
 		if (this.imgProps.boxSize.size() === 0) return;
 
-		this.context2d.fillStyle = 'rgba(0, 0, 0, 0.85)';
+		this.context2d.fillStyle = 'rgba(0, 0, 0, 0.5)';
 		this.context2d.fillRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 		this.context2d.clearRect(
 			this.imgProps.boxStartSanitized.x,

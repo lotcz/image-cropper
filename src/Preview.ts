@@ -60,7 +60,7 @@ export default class Preview extends EditorComponent {
 			- offset.y + (diffY > 0 ? 0 : -diffY / this.imgProps.zoomImg),
 			diffX > 0 ? this.imgProps.originalSize.x : this.imgProps.canvasSize.x / this.imgProps.zoomImg,
 			diffY > 0 ? this.imgProps.originalSize.y : this.imgProps.canvasSize.y / this.imgProps.zoomImg,
-			diffX > 0 ? diffX : 0,
+			diffX > offset.x ? diffX : 0,
 			diffY > 0 ? diffY : 0,
 			diffX > 0 ? actualWidth : this.imgProps.canvasSize.x,
 			diffY > 0 ? actualHeight : this.imgProps.canvasSize.y
