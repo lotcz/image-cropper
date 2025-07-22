@@ -30,6 +30,10 @@ export default class ImgProps extends LogicalComponent {
 
 	offset: Vector2 = new Vector2();
 
+	offsetLimit: Vector2 = new Vector2();
+
+	offsetScaled: Vector2 = new Vector2();
+
 	dragging: boolean = false;
 
 	dragStart: Vector2 = new Vector2();
@@ -42,6 +46,7 @@ export default class ImgProps extends LogicalComponent {
 		this.addChild(this.boxStartSanitized);
 		this.addChild(this.boxSize);
 		this.addChild(this.offset);
+		this.addChild(this.offsetScaled);
 		this.addChild(this.dragStart);
 
 		this.params = params;
@@ -57,11 +62,19 @@ export default class ImgProps extends LogicalComponent {
 		const updateMinZoomHandler = () => this.updateMinZoom();
 		this.originalSize.addChangedListener(updateMinZoomHandler);
 		this.boxSize.addChangedListener(updateMinZoomHandler);
+
+		const updateOffsetLimitHandler = () => this.updateOffsetLimit();
+		this.originalSize.addChangedListener(updateOffsetLimitHandler);
+		this.boxSize.addChangedListener(updateOffsetLimitHandler);
+
+		const updateOffsetHandler = () => this.onOffsetUpdated();
+		this.offset.addChangedListener(updateOffsetHandler);
+		this.offsetLimit.addChangedListener(updateOffsetHandler);
 	}
 
 	setZoom(zoom: number) {
 		this.zoomImg = Math.max(this.minZoom, zoom);
-		this.triggerChangedEvent();
+		this.updateOffsetLimit();
 	}
 
 	setOriginalSize(width: number, height: number) {
@@ -87,13 +100,37 @@ export default class ImgProps extends LogicalComponent {
 		const minZoom = Math.max(minZoomX, minZoomY);
 		if (minZoom > 0) {
 			this.minZoom = minZoom;
-			this.setZoom(this.zoomImg);
 			this.triggerChangedEvent();
+			if (this.zoomImg < minZoom) {
+				this.setZoom(minZoom);
+			}
 		}
 	}
 
-	setOffset(x: number, y: number) {
-		this.offset.set(x, y);
+	updateOffsetLimit() {
+		this.offsetLimit.set(this.originalSize.subtract(this.boxSize.multiply(1/this.zoomImg)).multiply(1 / 2));
+	}
+
+	onOffsetUpdated() {
+		if (this.offsetLimit.x >= 0 && this.offsetLimit.y >= 0) {
+			if (this.offset.x < -this.offsetLimit.x) {
+				this.offset.set(-this.offsetLimit.x, this.offset.y);
+				return;
+			}
+			if (this.offset.x > this.offsetLimit.x) {
+				this.offset.set(this.offsetLimit.x, this.offset.y);
+				return;
+			}
+			if (this.offset.y < - this.offsetLimit.y) {
+				this.offset.set(this.offset.x, - this.offsetLimit.y);
+				return;
+			}
+			if (this.offset.y > this.offsetLimit.y) {
+				this.offset.set(this.offset.x, this.offsetLimit.y);
+				return;
+			}
+		}
+		this.offsetScaled.set(this.offset.multiply(this.zoomImg));
 	}
 
 	setCanvasSize(x: number, y: number) {

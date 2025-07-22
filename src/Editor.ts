@@ -10,15 +10,11 @@ import {CropperParams} from "./CropperParams";
 
 export default class Editor extends EditorComponent {
 
-	language: string = "cs";
-
 	wrapper: DomBuilder;
 
 	preview: Preview;
 
 	toolbar: Toolbar;
-
-	initialized: boolean = false;
 
 	constructor(params: CropperParams) {
 		super(document.body, new ImgProps(params));
@@ -65,7 +61,8 @@ export default class Editor extends EditorComponent {
 		this.wrapper.addEventListener('mousemove', (e: MouseEvent) => {
 			const pos = new Vector2(e.clientX, e.clientY);
 			if (this.imgProps.dragging) {
-				this.imgProps.offset.set(this.imgProps.offset.add(pos).sub(this.imgProps.dragStart));
+				const offsetDiff = pos.sub(this.imgProps.dragStart);
+				this.imgProps.offset.set(this.imgProps.offset.add(offsetDiff.multiply(1/this.imgProps.zoomImg)));
 				this.imgProps.dragStart.set(pos);
 			}
 			if (this.imgProps.boxSelecting) {

@@ -91,7 +91,7 @@ export default class Toolbar extends EditorComponent {
 		this.zoomInfo.text(`Zoom: ${Util.round(this.imgProps.zoomImg, 2)} (min: ${Util.round(this.imgProps.minZoom, 2)})`);
 		this.originalInfo.text(`Original: ${this.imgProps.originalSize.x}px x ${this.imgProps.originalSize.y}px`);
 		this.croppedInfo.text(`Cropped: ${Util.round(Math.abs(this.imgProps.boxSize.x), 1)}px x ${Util.round(Math.abs(this.imgProps.boxSize.y), 1)}px`);
-		this.offsetInfo.text(`Offset: ${this.imgProps.offset.round().toString()}`);
+		this.offsetInfo.text(`Offset: ${this.imgProps.offset.round().toString()} limit: ${this.imgProps.offsetLimit.round().toString()}`);
 		this.cropButton.toggleAttr('disabled', this.imgProps.boxSize.size() === 0);
 	}
 }

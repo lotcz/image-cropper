@@ -52,15 +52,13 @@ export default class Preview extends EditorComponent {
 
 		this.context2d.clearRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 
-		const offset = this.imgProps.offset.multiply(1/this.imgProps.zoomImg);
-
 		this.context2d.drawImage(
 			this.img,
-			 - offset.x + (diffX > 0 ? 0 : -diffX / this.imgProps.zoomImg),
-			- offset.y + (diffY > 0 ? 0 : -diffY / this.imgProps.zoomImg),
+			 - this.imgProps.offset.x + (diffX > 0 ? 0 : -diffX / this.imgProps.zoomImg),
+			- this.imgProps.offset.y + (diffY > 0 ? 0 : -diffY / this.imgProps.zoomImg),
 			diffX > 0 ? this.imgProps.originalSize.x : this.imgProps.canvasSize.x / this.imgProps.zoomImg,
 			diffY > 0 ? this.imgProps.originalSize.y : this.imgProps.canvasSize.y / this.imgProps.zoomImg,
-			diffX > offset.x ? diffX : 0,
+			diffX > 0 ? diffX : 0,
 			diffY > 0 ? diffY : 0,
 			diffX > 0 ? actualWidth : this.imgProps.canvasSize.x,
 			diffY > 0 ? actualHeight : this.imgProps.canvasSize.y
