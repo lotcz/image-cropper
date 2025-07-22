@@ -1,8 +1,11 @@
 export const cs: Map<string, string> = new Map<string, string>(
 	[
+		["Zoom", "Zvětšení"],
+		["Original", "Originál"],
 		["Crop", "Oříznout"],
-		["Close", "Zavřít"],
-		["Use original", "Použít původní"]
+		["Final", "Výstup"],
+		["Aspect", "Formát"],
+		["Close", "Zavřít"]
 	]
 )
 

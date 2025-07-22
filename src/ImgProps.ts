@@ -16,9 +16,17 @@ export default class ImgProps extends LogicalComponent {
 
 	minZoom: number = 1;
 
+	/* viewport size */
 	canvasSize: Vector2 = new Vector2();
 
+	/* original image size */
 	originalSize: Vector2 = new Vector2();
+
+	/* size of cropped fragment */
+	cropSize: Vector2 = new Vector2();
+
+	/* scaled size of cropped fragment */
+	finalSize: Vector2 = new Vector2();
 
 	boxSelecting: boolean = false;
 
@@ -42,6 +50,8 @@ export default class ImgProps extends LogicalComponent {
 		super();
 		this.addChild(this.canvasSize);
 		this.addChild(this.originalSize);
+		this.addChild(this.cropSize);
+		this.addChild(this.finalSize);
 		this.addChild(this.boxStart);
 		this.addChild(this.boxStartSanitized);
 		this.addChild(this.boxSize);
@@ -51,6 +61,13 @@ export default class ImgProps extends LogicalComponent {
 		this.addChild(this.dragStart);
 
 		this.params = params;
+
+		const updateFinalSizeHandler = () => this.updateCropAndFinalSize();
+		this.boxSize.addChangedListener(updateFinalSizeHandler);
+		if (params.maxSize) {
+			this.maxSize = new Vector2(params.maxSize);
+			this.maxSize.addChangedListener(updateFinalSizeHandler);
+		}
 
 		const updateBoxHandler = () => this.updateBox();
 		this.boxStart.addChangedListener(updateBoxHandler);
@@ -71,11 +88,16 @@ export default class ImgProps extends LogicalComponent {
 		const updateOffsetHandler = () => this.onOffsetUpdated();
 		this.offset.addChangedListener(updateOffsetHandler);
 		this.offsetLimit.addChangedListener(updateOffsetHandler);
+
+		this.presetAspects = params.presetAspects.map(ps => new Vector2(ps).toAspectRatio());
+		this.setSelectedAspectIndex(0);
+
 	}
 
 	setZoom(zoom: number) {
 		this.zoomImg = Math.max(this.minZoom, zoom);
 		this.updateOffsetLimit();
+		this.updateCropAndFinalSize();
 	}
 
 	setOriginalSize(width: number, height: number) {
@@ -90,6 +112,14 @@ export default class ImgProps extends LogicalComponent {
 		const maxViewPort = this.canvasSize.multiply(0.9);
 		this.boxSize.set(this.selectedAspect.fill(maxViewPort));
 		this.boxStart.set(this.canvasSize.subtract(this.boxSize).multiply(0.5));
+	}
+
+	updateCropAndFinalSize() {
+		this.cropSize.set(this.boxSize.multiply(1/this.zoomImg));
+		const scaleX = this.maxSize.x / this.cropSize.x;
+		const scaleY = this.maxSize.y / this.cropSize.y;
+		const scale = Math.min(1, scaleX, scaleY);
+		this.finalSize.set(this.cropSize.multiply(scale));
 	}
 
 	updateMinZoom() {

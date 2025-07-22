@@ -64,38 +64,28 @@ export default class Preview extends EditorComponent {
 	}
 
 	crop() {
-		const canvasSize = this.imgProps.canvasSize.clone();
 		const actualSize = this.imgProps.originalSize.multiply(this.imgProps.zoomImg);
-		const imageCorner = canvasSize.sub(actualSize).multiply(0.5);
-		const boxCorner = this.imgProps.boxStart.clone();
-		const boxSize = this.imgProps.boxSize.clone();
+		const imageCorner = this.imgProps.canvasSize.sub(actualSize).multiply(0.5);
 
-		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoomImg);
-		const cropSize = boxSize.multiply(1/this.imgProps.zoomImg);
-
-		const scaleX = this.imgProps.maxSize.x / cropSize.x;
-		const scaleY = this.imgProps.maxSize.y / cropSize.y;
-		const scale = Math.min(1, scaleX, scaleY);
-
-		const finalSize = cropSize.multiply(scale);
+		const cropCorner = this.imgProps.boxStart.sub(imageCorner).multiply(1/this.imgProps.zoomImg);
 
 		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
 			.parent(this.wrapper)
 			.css('visually-hidden')
-			.attr('width', `${Math.abs(finalSize.x)}px`)
-			.attr('height', `${Math.abs(finalSize.y)}px`)
+			.attr('width', `${Math.abs(this.imgProps.finalSize.x)}px`)
+			.attr('height', `${Math.abs(this.imgProps.finalSize.y)}px`)
 			.build();
 		const context2d = canvas.getContext('2d');
 		context2d.drawImage(
 			this.img,
 			cropCorner.x - this.imgProps.offset.x,
 			cropCorner.y - this.imgProps.offset.y,
-			cropSize.x,
-			cropSize.y,
+			this.imgProps.cropSize.x,
+			this.imgProps.cropSize.y,
 			0,
 			0,
-			finalSize.x,
-			finalSize.y
+			this.imgProps.finalSize.x,
+			this.imgProps.finalSize.y
 		);
 		canvas.toBlob(
 			(blob: Blob | null) => {
@@ -103,7 +93,7 @@ export default class Preview extends EditorComponent {
 				const result: CropperResult = {
 					src: blob,
 					originalSize: this.imgProps.originalSize,
-					croppedSize: cropSize
+					croppedSize: this.imgProps.cropSize
 				};
 				this.imgProps.triggerEvent('cropped', result);
 				this.imgProps.triggerEvent('close');

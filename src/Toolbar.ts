@@ -15,11 +15,7 @@ export default class Toolbar extends EditorComponent {
 
 	croppedInfo: DomBuilder;
 
-	offsetInfo: DomBuilder;
-
 	aspectSelector: DomBuilder;
-
-	maxSizeInfo: DomBuilder;
 
 	buttons: DomBuilder;
 
@@ -36,19 +32,14 @@ export default class Toolbar extends EditorComponent {
 		this.zoomInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.originalInfo = DomBuilder.of('div').parent(this.wrapper);
 		this.croppedInfo = DomBuilder.of('div').parent(this.wrapper);
-		this.offsetInfo = DomBuilder.of('div').parent(this.wrapper);
-		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper);
-		this.maxSizeInfo = DomBuilder.of('div').parent(this.wrapper);
+		this.aspectSelector = DomBuilder.of('div').parent(this.wrapper).css('row');
 		this.buttons = DomBuilder.of('div').parent(this.wrapper).css('buttons');
-
-		// MAX SIZE
-
-		if (this.imgProps.maxSize) {
-			this.maxSizeInfo.text(`Max Size: [${this.imgProps.maxSize.x}px x ${this.imgProps.maxSize.y}px]`);
-		}
 
 		// ASPECT
 
+		const aspLabel = DomBuilder.of('div')
+			.parent(this.aspectSelector)
+			.text(Lang.t('Aspect') + ':');
 		const aspSelect = DomBuilder.of('select')
 			.parent(this.aspectSelector)
 			.attr('id', 'aspect')
@@ -70,7 +61,7 @@ export default class Toolbar extends EditorComponent {
 		DomBuilder.of('a')
 			.parent(this.buttons)
 			.attr('href', '#')
-			.text(Lang.t('Use original'))
+			.text(Lang.t('Close'))
 			.addEventListener('click', (e: Event) => {
 				EventUtil.stop(e);
 				this.imgProps.triggerEvent('close');
@@ -88,10 +79,9 @@ export default class Toolbar extends EditorComponent {
 	}
 
 	render() {
-		this.zoomInfo.text(`Zoom: ${Util.round(this.imgProps.zoomImg, 2)} (min: ${Util.round(this.imgProps.minZoom, 2)})`);
-		this.originalInfo.text(`Original: ${this.imgProps.originalSize.x}px x ${this.imgProps.originalSize.y}px`);
-		this.croppedInfo.text(`Cropped: ${Util.round(Math.abs(this.imgProps.boxSize.x), 1)}px x ${Util.round(Math.abs(this.imgProps.boxSize.y), 1)}px`);
-		this.offsetInfo.text(`Offset: ${this.imgProps.offset.round().toString()} limit: ${this.imgProps.offsetLimit.round().toString()}`);
+		this.zoomInfo.text(`${Lang.t('Zoom')}: ${Util.round(this.imgProps.zoomImg, 2)}x`);
+		this.originalInfo.text(`${Lang.t('Original')}: ${this.imgProps.originalSize.x}px x ${this.imgProps.originalSize.y}px`);
+		this.croppedInfo.text(`${Lang.t('Final')}: ${Util.round(Math.abs(this.imgProps.finalSize.x))}px x ${Util.round(Math.abs(this.imgProps.finalSize.y))}px`);
 		this.cropButton.toggleAttr('disabled', this.imgProps.boxSize.size() === 0);
 	}
 }
