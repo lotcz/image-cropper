@@ -44,24 +44,21 @@ export default class Preview extends EditorComponent {
 			.attr('width', `${this.imgProps.canvasSize.x}px`)
 			.attr('height', `${this.imgProps.canvasSize.y}px`);
 
-		const actualWidth = this.imgProps.originalSize.x * this.imgProps.zoomImg;
-		const actualHeight = this.imgProps.originalSize.y * this.imgProps.zoomImg;
-
-		const diffX = (this.imgProps.canvasSize.x - actualWidth) / 2;
-		const diffY = (this.imgProps.canvasSize.y - actualHeight) / 2;
+		const sourceSize= this.imgProps.canvasSize.multiply(1/this.imgProps.zoomImg);
+		const sourceStart= this.imgProps.originalSize.subtract(sourceSize).multiply(1/2).subtract(this.imgProps.offset);
 
 		this.context2d.clearRect(0, 0, this.imgProps.canvasSize.x, this.imgProps.canvasSize.y);
 
 		this.context2d.drawImage(
 			this.img,
-			 - this.imgProps.offset.x + (diffX > 0 ? 0 : -diffX / this.imgProps.zoomImg),
-			- this.imgProps.offset.y + (diffY > 0 ? 0 : -diffY / this.imgProps.zoomImg),
-			diffX > 0 ? this.imgProps.originalSize.x : this.imgProps.canvasSize.x / this.imgProps.zoomImg,
-			diffY > 0 ? this.imgProps.originalSize.y : this.imgProps.canvasSize.y / this.imgProps.zoomImg,
-			diffX > 0 ? diffX : 0,
-			diffY > 0 ? diffY : 0,
-			diffX > 0 ? actualWidth : this.imgProps.canvasSize.x,
-			diffY > 0 ? actualHeight : this.imgProps.canvasSize.y
+			sourceStart.x,
+			sourceStart.y,
+			sourceSize.x,
+			sourceSize.y,
+			0,
+			0,
+			this.imgProps.canvasSize.x,
+			this.imgProps.canvasSize.y
 		);
 
 	}
@@ -75,7 +72,6 @@ export default class Preview extends EditorComponent {
 
 		const cropCorner = boxCorner.sub(imageCorner).multiply(1/this.imgProps.zoomImg);
 		const cropSize = boxSize.multiply(1/this.imgProps.zoomImg);
-		const offset = this.imgProps.offset.multiply(1/this.imgProps.zoomImg);
 
 		const canvas = <HTMLCanvasElement>DomBuilder.of('canvas')
 			.parent(this.wrapper)
@@ -86,8 +82,8 @@ export default class Preview extends EditorComponent {
 		const context2d = canvas.getContext('2d');
 		context2d.drawImage(
 			this.img,
-			cropCorner.x - offset.x,
-			cropCorner.y - offset.y,
+			cropCorner.x - this.imgProps.offset.x,
+			cropCorner.y - this.imgProps.offset.y,
 			cropSize.x,
 			cropSize.y,
 			0,
