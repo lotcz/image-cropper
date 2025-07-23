@@ -1,6 +1,6 @@
 {
 	"name": "image-cropper",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Javascript lib that lets user crop images before upload.",
 	"main": "dist/image-cropper.js",
 	"devDependencies": {

@@ -37,11 +37,13 @@ export default class Toolbar extends EditorComponent {
 
 		// ASPECT
 
-		const aspLabel = DomBuilder.of('div')
+		DomBuilder.of('div')
 			.parent(this.aspectSelector)
 			.text(Lang.t('Aspect') + ':');
-		const aspSelect = DomBuilder.of('select')
+		const aspSelectWrap = DomBuilder.of('div')
 			.parent(this.aspectSelector)
+		const aspSelect = DomBuilder.of('select')
+			.parent(aspSelectWrap)
 			.attr('id', 'aspect')
 			.attr('name', 'aspect')
 			.addEventListener(

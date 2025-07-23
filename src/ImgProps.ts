@@ -116,6 +116,10 @@ export default class ImgProps extends LogicalComponent {
 
 	updateCropAndFinalSize() {
 		this.cropSize.set(this.boxSize.multiply(1/this.zoomImg));
+		if (this.maxSize === null) {
+			this.finalSize.set(this.cropSize);
+			return;
+		}
 		const scaleX = this.maxSize.x / this.cropSize.x;
 		const scaleY = this.maxSize.y / this.cropSize.y;
 		const scale = Math.min(1, scaleX, scaleY);
